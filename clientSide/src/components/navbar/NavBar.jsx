@@ -32,7 +32,7 @@ const NavBar = () => {
               },
               });
               
-              console.log('this is a wishlistData', wishListData)
+              // console.log('this is a wishlistData', wishListData)
           setCart(cartData.data.cart || []);
           setWishlist(wishListData.data.wishlist || []);
         } catch (error) {

@@ -61,7 +61,7 @@ const savewishlist = async (req, res) => {
       return res.status(404).send({ error: "User not found" });
     }
     const wishlist = userInfo.wishList;
-    console.log('this is wishlist', wishlist);
+    // console.log('this is wishlist', wishlist);
     res.status(200).json({ wishlist });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -7,7 +7,7 @@ const addtocartController = async (req, res) => {
   try {
     const {userId, title, price, image, sale, rating, id } = req.body;
     const all = req.body;
-    console.log('this is a req.body id-->', all)
+    // console.log('this is a req.body id-->', all)
 
     if (!userId || !title || !price || !image || !sale || !rating ) {
       console.log('error', all)
@@ -35,7 +35,7 @@ const addtocartController = async (req, res) => {
     }
     // console.log({ title, price, image, sale, rating })
 
-    res.status(200).json({ message: 'Watchlist updated successfully', wishList: user.wishList });
+    res.status(200).json({ message: 'cart updated successfully', cart: user.cart });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -48,6 +48,7 @@ const addtocartController = async (req, res) => {
         return res.status(404).send({ error: "User not found" });
       }
       const cart = userInfo.cart;
+      // console.log('this is cart-->', cart);
       res.status(200).json({ cart });
     } catch (err) {
       res.status(500).json({ error: err.message });

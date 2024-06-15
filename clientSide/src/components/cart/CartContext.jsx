@@ -74,7 +74,7 @@ export const CartProvider = ({ children }) => {
         console.log('this is response', response)
         // Update the cart state in the frontend
         // removeFromCart(_id);
-        setCart((prevCart) => prevCart.filter((item) => item._id !== id));
+        setCart((prevCart) => prevCart.filter((item) => item.id !== id));
       } catch (error) {
         console.error(error);
       }
@@ -99,7 +99,7 @@ export const CartProvider = ({ children }) => {
     console.log('this is response', response);
     
     // Update the wishlist state in the frontend
-    setWishlist((prevWishlist) => prevWishlist.filter((item) => item._id !== id));
+    setWishlist((prevWishlist) => prevWishlist.filter((item) => item.id !== id));
   } catch (error) {
     console.error(error);
   }

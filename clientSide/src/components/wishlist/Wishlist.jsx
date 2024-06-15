@@ -26,7 +26,7 @@ const Wishlist = () => {
                 <p className="text-gray-600 mb-2">{item.price}</p>
                 <button 
                   className="bg-red-500 text-white text-xs uppercase px-2 py-1 rounded-lg"
-                  onClick={() => removeFromWishlist(item._id)}
+                  onClick={() => removeFromWishlist(item.id)}
                 >
                   Remove
                 </button>

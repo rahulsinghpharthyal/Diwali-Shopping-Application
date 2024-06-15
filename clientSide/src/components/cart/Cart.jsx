@@ -4,15 +4,16 @@
     import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
     import { useDispatch } from 'react-redux';
     import { actionCreators } from '../../state/index';
-    import { useUser } from '../navbar/UserProvider';
+    // import { useUser } from '../navbar/UserProvider';
 
     const Cart = () => {
       const navigate = useNavigate();
       const dispatch = useDispatch();
-      const {user} = useUser(); 
+      // const {user} = useUser(); 
       const { cart, removeFromCart } = useCart();
-
+       
       console.log('this is cart', cart)
+      // console.log('thi is removefrom cart', removeFromCart)
       // const handleRemoveItem = async (_id) => {
       //   if(user){
       //     try {
@@ -115,7 +116,7 @@
                       <div className="flex flex-col items-center">
                         <p className="text-lg font-bold">{totalPerItem}</p>
                         <button
-                          onClick={() => removeFromCart(product._id)}
+                          onClick={() => removeFromCart(product.id)}
                           className="text-red-500 hover:text-red-700 mt-2"
                         >
                           Remove
