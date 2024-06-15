@@ -12,9 +12,10 @@ import axios from 'axios';
 const NavBar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [isLoginClicked, setIsLoginClicked] = useState(false);
+  const [isSellerClicked, setIsSellerClicked] = useState(false);
   const navigate = useNavigate();
   const { cart, wishlist, clearCart, clearWishlist, setWishlist, setCart } = useCart();
-
   const { user, setUser } = useUser();
 
   useEffect(() => {
@@ -29,14 +30,12 @@ const NavBar = () => {
           const cartData = await axios.get('http://localhost:3002/addtocart', {
             params: {
               userId: user._id,
-              },
-              });
-              
-              // console.log('this is a wishlistData', wishListData)
+            },
+          });
+
           setCart(cartData.data.cart || []);
           setWishlist(wishListData.data.wishlist || []);
         } catch (error) {
-          // console.error("Error fetching wishlist/cart data:", error);
           setCart([]);
           setWishlist([]);
         }
@@ -49,12 +48,27 @@ const NavBar = () => {
     fetchWishlistCount();
   }, [user, setCart, setWishlist]);
 
-  const handleLogout = () => {
-    // Clear user data and navigate to login
+  const handleLogout = async () => {
     setUser(null);
-    clearCart(); // Clear the cart
-    clearWishlist(); // Clear the wishlist
+    clearCart();
+    clearWishlist();
+    navigate('/');
+  };
+
+
+  const handleLoginClick = () => {
+    setIsLoginClicked(true);
+    setIsSellerClicked(false);
     navigate('/login');
+    console.log('login click', isLoginClicked)
+  };
+
+  const handleSellerClick = () => {
+    setIsSellerClicked(true);
+    setIsLoginClicked(false);
+    navigate('/login');
+    console.log('become a seeller click', isSellerClicked )
+
   };
 
   return (
@@ -99,10 +113,11 @@ const NavBar = () => {
             {user?._id ? (
               <>
                 <span className="hidden md:inline text-black">{user?.name}</span>
-                <button className='bg-red-500 w-24 h-10 rounded-lg text-white text-lg hidden md:inline' onClick={handleLogout}>Log Out</button>
+                <button className='bg-red-500 w-24 h-10 rounded-lg text-white text-sm hidden md:inline' onClick={handleLogout}>Log Out</button>
+                <button className='bg-blue-500 w-24 h-10 rounded-lg text-white text-sm hidden md:inline' onClick={handleSellerClick}>Become a Seller</button>
               </>
             ) : (
-              <button className='bg-blue-500 w-24 h-10 rounded-lg text-white text-lg hidden md:inline' onClick={() => navigate('/login')}>Log In</button>
+              <button className='bg-blue-500 w-24 h-10 rounded-lg text-white text-lg hidden md:inline' onClick={handleLoginClick}>Log In</button>
             )}
           </div>
         </div>
@@ -128,13 +143,11 @@ const NavBar = () => {
                 {user?._id ? (
                   <>
                     <span className="text-black">{user?.name}</span>
-                    <button className='bg-red-500 w-24 h-10 rounded-lg text-white text-lg' onClick={() => { handleLogout(); setDropdownOpen(false); }}>Log Out</button>
+                    <button className='bg-red-500 w-24 h-10 rounded-lg text-white text-sm' onClick={() => { handleLogout(); setDropdownOpen(false); }}>Log Out</button>
+                    <button className='bg-blue-500 w-24 h-10 rounded-lg text-white text-sm' onClick={() => { handleSellerClick(); setDropdownOpen(false); }}>Become a Seller</button>
                   </>
                 ) : (
-                  <>
-                    <button className='bg-blue-500 w-24 h-10 rounded-lg text-white text-lg' onClick={() => { navigate('/login'); setDropdownOpen(false); }}>Log In</button>
-                    
-                  </>
+                  <button className='bg-blue-500 w-24 h-10 rounded-lg text-white text-lg' onClick={() => { handleLoginClick(); setDropdownOpen(false); }}>Log In</button>
                 )}
               </div>
             </ul>

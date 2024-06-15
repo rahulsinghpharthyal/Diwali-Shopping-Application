@@ -1,44 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart as solidHeart } from "@fortawesome/free-solid-svg-icons";
 import { faHeart as regularHeart } from "@fortawesome/free-regular-svg-icons";
 import { useCart } from "../cart/CartContext";
 import axios from "axios";
 import { useUser } from "../navbar/UserProvider";
+import Modal from "../../Pages/Modal"; // Import the Modal component
 
-const Product = ({id, title, price, image, sale, rating }) => {
+const Product = ({ id, title, price, image, sale, rating }) => {
   const [hovered, setHovered] = useState(false);
-  const [notification, setNotification] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [favorited, setFavorited] = useState(false);
+  const [notification, setNotification] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const { addToCart, addToWishlist, removeFromWishlist } = useCart();
+
   const { user } = useUser();
-  // console.log('this is product id-->', id)
-  // useEffect(() => {
-  //   const fetchWishlistCount = async () => {
-  //     if (user) {
-  //       try {
-  //         const response = await axios.get('http://localhost:3002/addtocart', {
-  //           params: {
-  //             userId: user._id,
-  //           },
-  //           });
 
-  //         // console.log('this is response-->', response)
-  //         // setWishlist(response.data.wishlist);
-  //       console.log('this is addcart', response.data)
-  //       } catch (error) {
-  //         console.error("Error fetching wishlist count:", error);
-  //       }
-  //     }
-  //   };
+  useEffect(() => {
+    if (notification) {
+      setShowPopup(true);
 
-  //   fetchWishlistCount();
-  // }, [user]);
+      const timer = setTimeout(() => {
+        setShowPopup(false);
+        setNotification("");
+      }, 3000); // Popup disappears after 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   const handleAddToCart = async () => {
     if (!user) {
-      // console.log('this is a user--->', user)
-      showNotification("Please log in to add items to your cart");
+      setModalMessage("Please log in to add items to your cart");
+      setShowModal(true);
       return;
     } else {
       const userId = user._id;
@@ -57,25 +52,20 @@ const Product = ({id, title, price, image, sale, rating }) => {
 
       try {
         await axios.put("http://localhost:3002/addtocart", data, { headers });
-        addToCart({id, title, price, image, sale, rating });
-        showNotification("Item added to cart!");
+        addToCart({ id, title, price, image, sale, rating });
+        setNotification("Item added to cart!");
+        // setShowModal(true);
       } catch (error) {
-        // console.error("Error adding item to cart:", error);
-        showNotification("Please log in to add items to your cart");
+        setModalMessage("Please log in to add items to your cart");
+        setShowModal(true);
       }
     }
   };
 
-  const showNotification = (message) => {
-    setNotification(message);
-    setTimeout(() => {
-      setNotification("");
-    }, 2000);
-  };
-
   const toggleFavorite = async (_id) => {
     if (!user) {
-      showNotification("Please log in to add items to your wishlist");
+      setModalMessage("Please log in to add items to your wishlist");
+      setShowModal(true);
       return;
     }
     if (!favorited) {
@@ -95,23 +85,29 @@ const Product = ({id, title, price, image, sale, rating }) => {
         };
 
         await axios.put("http://localhost:3002/wishlist", data, { headers });
-        addToWishlist({id, title, price, image, sale, rating });
-        showNotification("Item added to wishlist!");
+        addToWishlist({ id, title, price, image, sale, rating });
+        setNotification("Item added to wishlist!");
+        // setShowModal(true);
       } catch (error) {
-        // console.error("Error adding item to wishlist:", error);
-        showNotification("Please log in to add items to your wishlist");
+        setModalMessage("Please log in to add items to your wishlist");
+        setShowModal(true);
       }
     } else {
       try {
         removeFromWishlist(_id);
-        showNotification("Item removed from wishlist!");
+        setModalMessage("Item removed from wishlist!");
+        setShowModal(true);
       } catch (error) {
-        console.error("Error removing item from wishlist:", error);
-        showNotification("Failed to remove item from wishlist");
+        setModalMessage("Failed to remove item from wishlist");
+        setShowModal(true);
       }
     }
 
     setFavorited(!favorited);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -120,11 +116,10 @@ const Product = ({id, title, price, image, sale, rating }) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {notification && (
-        <div className="fixed top-16 inset-x-0 flex justify-center z-50">
-          <div className="bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg">
-            {notification}
-          </div>
+      <Modal show={showModal} onClose={closeModal} message={modalMessage} />
+      {showPopup && (
+        <div className=" bg-green-500 text-white text-sm px-4 py-2 rounded-md absolute top-4 right-4 z-50">
+          {notification}
         </div>
       )}
       <img

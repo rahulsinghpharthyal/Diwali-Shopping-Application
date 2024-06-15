@@ -10,7 +10,8 @@ import loginRoute from "./routes/loginRoute.js";
 import saveOrderRoute from "./routes/saveOrderRoute.js";
 import saveWishlistRoute  from "./routes/saveWishlistRoute.js";
 import addtoCartRoute from "./routes/addtoCartRoute.js";
-import girlsDataRoute from"./routes/girlsDataRoute.js";
+import girlsDataRoute from "./routes/girlsDataRoute.js";
+import sellerloginRoute from "./routes/sellerloginRoute.js";
 
 const app = express();
 const PORT = 3002;
@@ -33,6 +34,7 @@ app.use("/checkout", paymentRoute);
 app.use("/save-order", saveOrderRoute);
 app.use("/wishlist", saveWishlistRoute);
 app.use("/addtocart", addtoCartRoute);
+app.use("/become-seller", sellerloginRoute);
 
 app.listen(`${PORT}`, () => {
   console.log(`Server listening on port ${PORT}`);
